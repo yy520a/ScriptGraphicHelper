@@ -1,0 +1,177 @@
+﻿<Window Name="TheWindow" x:Class="综合图色助手.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:prism="http://prismlibrary.com/"
+        prism:ViewModelLocator.AutoWireViewModel="True"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        Background="{DynamicResource MaterialDesignPaper}"
+        TextElement.FontWeight="Normal"
+        TextElement.FontSize="14"
+        FontFamily="{materialDesign:MaterialDesignFont}"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        Title="{Binding Title}" Width="1760" Height="990" Loaded="Window_Loaded" SizeChanged="Window_SizeChanged" PreviewKeyDown="Window_PreviewKeyDown">
+
+    <Grid>
+        <ContentControl prism:RegionManager.RegionName="ContentRegion" />
+        <StackPanel x:Name="Panel_1" Width="Auto" Height="Auto" HorizontalAlignment="Left" VerticalAlignment="Top" >
+            <ComboBox  x:Name="EmulatorOptions" Margin="20,10" Width="120"  
+                   ItemsSource="{Binding EmulatorInfo,Mode=TwoWay}"
+                   Style="{StaticResource MaterialDesignFloatingHintComboBox}"
+                   materialDesign:HintAssist.FloatingScale="0.8" 
+                   materialDesign:HintAssist.FloatingOffset="0, -18"
+                   materialDesign:TextFieldAssist.HasClearButton="False"
+                   materialDesign:TextFieldAssist.UnderlineBrush="{DynamicResource SecondaryAccentBrush}"
+                   materialDesign:ColorZoneAssist.Mode="Inverted"
+                   materialDesign:HintAssist.Hint="{Binding EmulatorOptionsHint,Mode=TwoWay}">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="SelectionChanged">
+                        <i:InvokeCommandAction Command="{Binding Emulator_SelectionChanged}" CommandParameter="{Binding ElementName=TheWindow}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </ComboBox>
+
+            <Button x:Name="ScreenShot" Command="{Binding ScreenShot_Click}" CommandParameter="{Binding ElementName=TheWindow}" Margin="20,10" Width="120" Style="{DynamicResource MaterialDesignRaisedButton}" Cursor="Hand">截图</Button>
+            <Button x:Name="Open" Margin="20,10" Width="120" Command="{Binding Open_Click}" Style="{DynamicResource MaterialDesignRaisedButton}">载入</Button>
+            <Button x:Name="Save" Margin="20,10" Width="120" Command="{Binding Save_Click}" Style="{DynamicResource MaterialDesignRaisedButton}">保存</Button>
+            <Button x:Name="TurnRight" Margin="20,10" Width="120" Command="{Binding TurnRight_Click}" Style="{DynamicResource MaterialDesignRaisedButton}">右转</Button>
+            <Button x:Name="Test" Margin="20,10" Width="120" Command="{Binding Test_Click}" CommandParameter="{Binding ElementName=TheWindow}" Style="{DynamicResource MaterialDesignRaisedButton}">测试</Button>
+            <ComboBox  x:Name="Sim" Margin="20,10" Width="120" SelectedIndex="{Binding SimSelectedIndex,Mode=TwoWay}"
+                   Style="{StaticResource MaterialDesignFloatingHintComboBox}"
+                   materialDesign:HintAssist.FloatingScale="0.8" 
+                   materialDesign:HintAssist.FloatingOffset="0, -18"
+                   materialDesign:TextFieldAssist.HasClearButton="False"
+                   materialDesign:TextFieldAssist.UnderlineBrush="{DynamicResource SecondaryAccentBrush}"
+                   materialDesign:ColorZoneAssist.Mode="Inverted"
+                   materialDesign:HintAssist.Hint="相似度">
+                <ComboBoxItem>100</ComboBoxItem>
+                <ComboBoxItem>95</ComboBoxItem>
+                <ComboBoxItem>90</ComboBoxItem>
+                <ComboBoxItem>85</ComboBoxItem>
+                <ComboBoxItem>80</ComboBoxItem>
+            </ComboBox>
+            <TextBox x:Name="Result" Margin="20,10" Width="120" Text="{Binding TestResult}" IsReadOnly="True"
+                   Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                   materialDesign:HintAssist.Hint="返回值"
+                   materialDesign:HintAssist.FloatingScale="0.8" 
+                   materialDesign:HintAssist.FloatingOffset="0, -18"
+                   materialDesign:TextFieldAssist.TextBoxViewMargin="1 0 1 0" />
+
+            <ComboBox  x:Name="Format" Margin="20,10" Width="120" SelectedIndex="{Binding FormatSelectedIndex,Mode=TwoWay}"
+                   Style="{StaticResource MaterialDesignFloatingHintComboBox}"
+                   materialDesign:HintAssist.FloatingScale="0.8" 
+                   materialDesign:HintAssist.FloatingOffset="0, -18"
+                   materialDesign:TextFieldAssist.HasClearButton="False"
+                   materialDesign:TextFieldAssist.UnderlineBrush="{DynamicResource SecondaryAccentBrush}"
+                   materialDesign:ColorZoneAssist.Mode="Inverted"
+                   materialDesign:HintAssist.Hint="格式">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="SelectionChanged">
+                        <i:InvokeCommandAction Command="{Binding Format_SelectionChanged}" CommandParameter="{Binding ElementName=TheWindow}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+                <ComboBoxItem>多点比色格式</ComboBoxItem>
+                <ComboBoxItem>大漠/乐玩找色格式</ComboBoxItem>
+                <ComboBoxItem>按键多点找色格式</ComboBoxItem>
+                <ComboBoxItem>按键多点比色格式</ComboBoxItem>
+                <ComboBoxItem>触动多点找色格式</ComboBoxItem>
+                <ComboBoxItem>触动多点比色格式</ComboBoxItem>
+                <ComboBoxItem>AJ多点找色格式</ComboBoxItem>
+                <ComboBoxItem>EC多点找色格式</ComboBoxItem>
+                <ComboBoxItem>锚点多点比色格式</ComboBoxItem>
+            </ComboBox>
+            <TextBox x:Name="Range" Margin="20,10" Width="120" Text="{Binding Range,Mode=TwoWay}"
+                   Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                   materialDesign:HintAssist.Hint="范围"
+                   materialDesign:HintAssist.FloatingScale="0.8" 
+                   materialDesign:HintAssist.FloatingOffset="0, -18"
+                   materialDesign:TextFieldAssist.TextBoxViewMargin="1 0 1 0" />
+            <Button x:Name="Create" Command="{Binding Create_Click}" Margin="20,10" Width="120" Style="{DynamicResource MaterialDesignRaisedButton}">生成</Button>
+            <TextBox x:Name="ColorString" Margin="20,10" Width="120" Height="175" Padding="0" Text="{Binding CreateStr}" IsReadOnly="True" TextWrapping="Wrap"
+                   Style="{StaticResource MaterialDesignOutlinedTextFieldTextBox}"
+                   materialDesign:HintAssist.Hint="生成字符串"
+                   materialDesign:HintAssist.FloatingScale="1" 
+                   materialDesign:HintAssist.FloatingOffset="0, -18"
+                   materialDesign:TextFieldAssist.TextBoxViewMargin="1 0 1 0" />
+            <Button x:Name="Copy" Margin="20,10" Click="Copy_Click" Width="120" Style="{DynamicResource MaterialDesignRaisedButton}">复制</Button>
+            <Button x:Name="Clear" Margin="20,10" Width="120" Command="{Binding Clear_Click}" Style="{DynamicResource MaterialDesignRaisedButton}">清空</Button>
+        </StackPanel>
+
+        <StackPanel x:Name="Panel_3" Width="auto" Height="auto" HorizontalAlignment="Right" VerticalAlignment="Top" SizeChanged="Window_SizeChanged">
+            <Border Margin="15,15" BorderBrush="#666666" BorderThickness ="1" Style="{DynamicResource MaterialDesignToolBarMainPanelBorderStyle}">
+                <DataGrid x:Name="Color_Info" FontSize="16" ItemsSource="{Binding ColorInfos, Mode=TwoWay}"
+                   Style="{DynamicResource MaterialDesignDataGrid}"
+                   RowHeaderStyle="{DynamicResource MaterialDesignDataGridRowHeader}"
+                   RowStyle="{DynamicResource MaterialDesignDataGridRow}"
+                   CanUserSortColumns="False"
+                   CanUserAddRows="False"
+                   SelectionUnit="FullRow"
+                   SelectionMode="Single"
+                   AutoGenerateColumns="False"
+                   AllowDrop="true"
+                   materialDesign:DataGridAssist.ColumnHeaderPadding="6">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="序号" Binding="{Binding Index}" ElementStyle="{DynamicResource MaterialDesignDataGridTextColumnStyle}" IsReadOnly="True"/>
+                        <materialDesign:DataGridComboBoxColumn x:Name="TheAnchors" Header="锚点" SelectedValueBinding="{Binding Anchors}"  ItemsSourceBinding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}, Path=DataContext.AnchorsValue}" Visibility="Collapsed"/>
+                        <DataGridTextColumn Header="坐标" Binding="{Binding PointStr}" ElementStyle="{DynamicResource MaterialDesignDataGridTextColumnStyle}" IsReadOnly="True"/>
+                        <DataGridTemplateColumn Header="颜色" IsReadOnly="True">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding ColorStr}" Foreground="{Binding TheBrush}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridCheckBoxColumn Header="状态" Binding="{Binding IsChecked,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" ElementStyle="{DynamicResource MaterialDesignDataGridCheckBoxColumnStyle}"/>
+                    </DataGrid.Columns>
+                    <DataGrid.ContextMenu>
+                        <ContextMenu Style="{DynamicResource MaterialDesignContextMenu}">
+                            <MenuItem Header="复制坐标" Click="CopyPoint_Click"/>
+                            <MenuItem Header="复制颜色值" Click="CopyColor_Click"/>
+                            <MenuItem Header="清空列表" Command="{Binding ClearData_Click}"/>
+                        </ContextMenu>
+                    </DataGrid.ContextMenu>
+                </DataGrid>
+            </Border>
+        </StackPanel>
+
+        <Grid x:Name="Panel_2" Margin="160,15" Width="auto" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <ScrollViewer x:Name="Scroll_1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Focusable="False" Style="{DynamicResource MaterialDesignScrollViewer}">
+                <Image x:Name="Img" Source="{Binding ImgSource}" Height="{Binding ImgHeight}" Width="{Binding ImgWidth}" 
+                       SizeChanged="Window_SizeChanged" HorizontalAlignment="Left" VerticalAlignment="Top" Focusable="True">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="MouseLeftButtonDown">
+                            <i:InvokeCommandAction Command="{Binding Img_MouseDown}" CommandParameter="{Binding ElementName=TheWindow}"/>
+                        </i:EventTrigger>
+                        <i:EventTrigger EventName="MouseMove">
+                            <i:InvokeCommandAction Command="{Binding Img_MouseMove}" CommandParameter="{Binding ElementName=TheWindow}"/>
+                        </i:EventTrigger>
+                        <i:EventTrigger EventName="MouseLeftButtonUp">
+                            <i:InvokeCommandAction Command="{Binding Img_MouseLeftButtonUp}" CommandParameter="{Binding ElementName=Img}"/>
+                        </i:EventTrigger>
+                        <i:EventTrigger EventName="MouseLeave">
+                            <i:InvokeCommandAction Command="{Binding Img_MouseLeave}" CommandParameter="{Binding ElementName=TheWindow}"/>
+                        </i:EventTrigger>
+                        <i:EventTrigger EventName="MouseEnter">
+                            <i:InvokeCommandAction Command="{Binding Img_MouseEnter}"/>
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </Image>
+            </ScrollViewer>
+        </Grid>
+
+        <StackPanel x:Name="Panel_4" IsEnabled="False" Margin="{Binding LoupeMargin}" Width="auto" Height="auto" Visibility="{Binding LoupeVisibility,Mode=TwoWay}" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <Image x:Name="Loupe" Source="{Binding LoupeWriteBmp}" Width="241" Height="241" Stretch="UniformToFill"/>
+            <StackPanel Orientation="Horizontal" Background="#666666" Width="241" Height="auto">
+                <TextBlock Margin="10,3,0,8" Foreground="#bbbbbb">x</TextBlock>
+                <TextBlock Margin="10,8,0,8" Text="{Binding PointX}" FontSize="16"/>
+                <TextBlock Margin="70,3,0,8" Foreground="#bbbbbb">y</TextBlock>
+                <TextBlock Margin="10,8,0,8" Text="{Binding PointY}" FontSize="16"/>
+            </StackPanel>
+        </StackPanel>
+        <Rectangle x:Name="SelectRectangle" Fill="Transparent" RadiusX="0" RadiusY="0" Width="{Binding SelectRectangleWidth}" Height="{Binding SelectRectangleHeight}" Margin="{Binding SelectRectangleMargin,Mode=TwoWay}" Stroke="Red" StrokeDashArray="3" Visibility="{Binding SelectRectangleVisibility,Mode=TwoWay}" HorizontalAlignment="Left" VerticalAlignment="Top"  Focusable="False"
+          />
+        <StackPanel x:Name="Panel_5" Margin="{Binding FindResultMargin}" Visibility="{Binding FindResultVisibility,Mode=TwoWay}" IsVisibleChanged="Panel_5_IsVisibleChanged" Width="auto" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <Image x:Name="FindResult" Source="/综合图色助手;component/point.png"  Width="29" Height="38" Stretch="UniformToFill"/>
+        </StackPanel>
+    </Grid>
+</Window>

@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30309.148
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScriptGraphicHelper", "ScriptGraphicHelper\ScriptGraphicHelper.csproj", "{1C0EE20A-BDA5-4504-AA91-1C2B13252621}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1C0EE20A-BDA5-4504-AA91-1C2B13252621}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C0EE20A-BDA5-4504-AA91-1C2B13252621}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C0EE20A-BDA5-4504-AA91-1C2B13252621}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C0EE20A-BDA5-4504-AA91-1C2B13252621}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {33ADA398-0B27-404F-A8F8-18E55CF40FBF}
+	EndGlobalSection
+EndGlobal
