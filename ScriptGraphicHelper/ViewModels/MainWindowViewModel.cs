@@ -11,6 +11,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
@@ -24,7 +25,7 @@ namespace ScriptGraphicHelper.ViewModels
 {
     public class MainWindowViewModel : BindableBase
     {
-        private string _title = "综合图色助手 V1.0.6";
+        private string _title = "综合图色助手 V1.0.7";
         public string Title
         {
             get { return _title; }
@@ -181,6 +182,13 @@ namespace ScriptGraphicHelper.ViewModels
         {
             get { return _findResultVisibility; }
             set { SetProperty(ref _findResultVisibility, value); }
+        }
+
+        private int _colorInfoSelect;
+        public int ColorInfoSelect
+        {
+            get { return _colorInfoSelect; }
+            set { SetProperty(ref _colorInfoSelect, value); }
         }
 
         public IEnumerable<string> AnchorsValue => new[] { "L", "C", "R" };
@@ -345,7 +353,7 @@ namespace ScriptGraphicHelper.ViewModels
                              if (strArray[1].Length <= 3)
                              {
                                  MessageBox.Show("多点找色至少需要勾选两个颜色才可进行测试!", "错误");
-                                 TestResult = "exception";
+                                 TestResult = "error";
                                  return;
                              }
                              string[] _ = strArray[0].Split(",\"");
@@ -574,6 +582,46 @@ namespace ScriptGraphicHelper.ViewModels
                      }
                  });
 
+        public ICommand Offset_Click => new DelegateCommand(() =>
+        {
+            if (ColorInfos.Count>0)
+            {
+                if (ColorInfoSelect != -1)
+                {
+                    Offset offset = new Offset();
+                    if ((bool)offset.ShowDialog())
+                    {
+                        ColorInfos[ColorInfoSelect].OffsetColor = offset.Result;
+                    }
+                }
+            }
+        });
+        public ICommand AllOffset_Click => new DelegateCommand(() =>
+        {
+            Offset offset = new Offset();
+            if ((bool)offset.ShowDialog())
+            {
+                for (int i = 0; i < ColorInfos.Count; i++)
+                {
+                    if (ColorInfos[i].OffsetColor == "000000")
+                    {
+                        ColorInfos[i].OffsetColor = offset.Result;
+                    }
+                }
+                ColorInfo.AllOffsetColor = offset.Result;
+            }
+        });
+        public ICommand AllOffsetClear_Click => new DelegateCommand(() =>
+        {
+            for (int i = 0; i < ColorInfos.Count; i++)
+            {
+                if (ColorInfos[i].OffsetColor == ColorInfo.AllOffsetColor)
+                {
+                    ColorInfos[i].OffsetColor = "000000";
+                }
+            }
+            ColorInfo.AllOffsetColor = "000000";
+        });
         [DllImport("gdi32.dll")]
         public static extern bool DeleteObject(IntPtr hObject);
         private ImageSource Bitmap2BitmapImage(Bitmap bitmap)

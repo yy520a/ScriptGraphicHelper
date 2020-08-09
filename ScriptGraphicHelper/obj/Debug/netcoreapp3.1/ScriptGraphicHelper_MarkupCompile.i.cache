@@ -10,11 +10,11 @@ none
 false
 TRACE;DEBUG;NETCOREAPP;NETCOREAPP3_1
 C:\Users\super\source\repos\ScriptGraphicHelper\ScriptGraphicHelper\App.xaml
-2427564272
+3-903180486
 
-18891705889
+20-99793557
 2042051399313
-Views\MainWindow.xaml;Views\TcpConfig.xaml;
+Views\MainWindow.xaml;Views\Offset.xaml;Views\TcpConfig.xaml;
 
-True
+False
 

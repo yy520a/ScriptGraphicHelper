@@ -10,7 +10,7 @@
         TextElement.FontSize="14"
         FontFamily="{materialDesign:MaterialDesignFont}"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-        Title="{Binding Title}" Width="1760" Height="990" Loaded="Window_Loaded" SizeChanged="Window_SizeChanged" PreviewKeyDown="Window_PreviewKeyDown">
+        Title="{Binding Title}" Width="1760" Height="990" Loaded="Window_Loaded" Closed="Window_Closed" SizeChanged="Window_SizeChanged" PreviewKeyDown="Window_PreviewKeyDown">
 
     <Grid>
         <ContentControl prism:RegionManager.RegionName="ContentRegion" />
@@ -104,6 +104,7 @@
         <StackPanel x:Name="Panel_3" Width="auto" Height="auto" HorizontalAlignment="Right" VerticalAlignment="Top" SizeChanged="Window_SizeChanged">
             <Border Margin="15,15" BorderBrush="#666666" BorderThickness ="1" Style="{DynamicResource MaterialDesignToolBarMainPanelBorderStyle}">
                 <DataGrid x:Name="Color_Info" FontSize="16" ItemsSource="{Binding ColorInfos, Mode=TwoWay}"
+                   SelectedIndex="{Binding ColorInfoSelect,Mode=TwoWay}"
                    Style="{DynamicResource MaterialDesignDataGrid}"
                    RowHeaderStyle="{DynamicResource MaterialDesignDataGridRowHeader}"
                    RowStyle="{DynamicResource MaterialDesignDataGridRow}"
@@ -131,6 +132,9 @@
                         <ContextMenu Style="{DynamicResource MaterialDesignContextMenu}">
                             <MenuItem Header="复制坐标" Click="CopyPoint_Click"/>
                             <MenuItem Header="复制颜色值" Click="CopyColor_Click"/>
+                            <MenuItem Header="添加偏色" Command="{Binding Offset_Click}"/>
+                            <MenuItem Header="添加全局偏色" Command="{Binding AllOffset_Click}"/>
+                            <MenuItem Header="清除全局偏色" Command="{Binding AllOffsetClear_Click}"/>
                             <MenuItem Header="清空列表" Command="{Binding ClearData_Click}"/>
                         </ContextMenu>
                     </DataGrid.ContextMenu>
@@ -175,7 +179,7 @@
         <Rectangle x:Name="SelectRectangle" Fill="Transparent" RadiusX="0" RadiusY="0" Width="{Binding SelectRectangleWidth}" Height="{Binding SelectRectangleHeight}" Margin="{Binding SelectRectangleMargin,Mode=TwoWay}" Stroke="Red" StrokeDashArray="3" Visibility="{Binding SelectRectangleVisibility,Mode=TwoWay}" HorizontalAlignment="Left" VerticalAlignment="Top"  Focusable="False"
           />
         <StackPanel x:Name="Panel_5" Margin="{Binding FindResultMargin}" Visibility="{Binding FindResultVisibility,Mode=TwoWay}" IsVisibleChanged="Panel_5_IsVisibleChanged" Width="auto" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Top">
-            <Image x:Name="FindResult" Source="/ScriptGraphicHelper;component/point.png"  Width="29" Height="38" Stretch="UniformToFill"/>
+            <Image x:Name="FindResult" Source="/ScriptGraphicHelper;component/Images/point.png"  Width="29" Height="38" Stretch="UniformToFill"/>
         </StackPanel>
     </Grid>
 </Window>

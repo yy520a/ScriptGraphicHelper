@@ -12,6 +12,7 @@ namespace ScriptGraphicHelper.Models
         public string Anchors { get; set; }
         public string PointStr { get; set; }
         public string ColorStr { get; set; }
+        public string OffsetColor { get; set; }
         public bool IsChecked { get; set; }
         public Brush TheBrush { get; set; }
         public System.Drawing.Color TheColor { get; set; }
@@ -19,6 +20,8 @@ namespace ScriptGraphicHelper.Models
 
         public double Width { get; set; }
         public double Height { get; set; }
+        public static string AllOffsetColor { get; set; } = "000000";
+
         public ColorInfo(int index, Point point, System.Drawing.Color color)
         {
             TheColor = color;
@@ -30,6 +33,7 @@ namespace ScriptGraphicHelper.Models
             Anchors = "L";
             PointStr = point.X.ToString() + "," + point.Y.ToString();
             ColorStr = "#" + color.R.ToString("X2") + color.G.ToString("X2") + color.B.ToString("X2");
+            OffsetColor = AllOffsetColor;
             TheBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(color.A, color.R, color.G, color.B));
             IsChecked = true;
         }
@@ -39,11 +43,11 @@ namespace ScriptGraphicHelper.Models
             point.X = Math.Round(point.X, 0);
             point.Y = Math.Round(point.Y, 0);
             ThePoint = point;
-
             Index = index;
             Anchors = anchors;
             PointStr = point.X.ToString() + "," + point.Y.ToString();
             ColorStr = "#" + color.R.ToString("X2") + color.G.ToString("X2") + color.B.ToString("X2");
+            OffsetColor = AllOffsetColor;
             TheBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(color.A, color.R, color.G, color.B));
             IsChecked = true;
             Width = width;

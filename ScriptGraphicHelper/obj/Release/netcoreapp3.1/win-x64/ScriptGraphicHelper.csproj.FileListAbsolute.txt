@@ -527,3 +527,5 @@ C:\Users\super\source\repos\ScriptGraphicHelper\ScriptGraphicHelper\obj\Release\
 C:\Users\super\source\repos\ScriptGraphicHelper\ScriptGraphicHelper\obj\Release\netcoreapp3.1\win-x64\ScriptGraphicHelper.dll
 C:\Users\super\source\repos\ScriptGraphicHelper\ScriptGraphicHelper\obj\Release\netcoreapp3.1\win-x64\ScriptGraphicHelper.pdb
 C:\Users\super\source\repos\ScriptGraphicHelper\ScriptGraphicHelper\obj\Release\netcoreapp3.1\win-x64\ScriptGraphicHelper.genruntimeconfig.cache
+C:\Users\super\source\repos\ScriptGraphicHelper\ScriptGraphicHelper\obj\Release\netcoreapp3.1\win-x64\Views\Offset.g.cs
+C:\Users\super\source\repos\ScriptGraphicHelper\ScriptGraphicHelper\obj\Release\netcoreapp3.1\win-x64\Views\Offset.baml

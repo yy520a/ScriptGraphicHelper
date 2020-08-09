@@ -13,6 +13,8 @@ using System.Windows.Threading;
 using ScriptGraphicHelper.Models;
 using Color = System.Windows.Media.Color;
 using Point = System.Windows.Point;
+using Newtonsoft.Json;
+using static System.Environment;
 
 namespace ScriptGraphicHelper.Views
 {
@@ -40,9 +42,60 @@ namespace ScriptGraphicHelper.Views
             FocusManager.SetFocusedElement(Img, SelectRectangle);
 
             showTimer.Tick += new EventHandler(Panel_5_SetVisibility);
-
+            try
+            {
+                StreamReader sr = File.OpenText(CurrentDirectory + "\\setting.json");
+                string configStr = sr.ReadToEnd();
+                sr.Close();
+                Setting setting = JsonConvert.DeserializeObject<Setting>(configStr);
+                if (setting.LastSize)
+                {
+                    Width = setting.LastWidth;
+                    Height = setting.LastHeight;
+                }
+                if (setting.LastSim && Sim.Items.Count > setting.SimSelect)
+                {
+                    Sim.SelectedIndex = setting.SimSelect;
+                }
+                if (setting.LastFormat && Format.Items.Count > setting.SimSelect)
+                {
+                    Format.SelectedIndex = setting.FormatSelect;
+                }
+            }
+            catch
+            {
+                MessageBox.Show("读取配置文件出错, 请检查配置文件是否存在!", "错误");
+            }
         }
-
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            try
+            {
+                StreamReader sr = File.OpenText(CurrentDirectory + "\\setting.json");
+                string configStr = sr.ReadToEnd();
+                sr.Close();
+                Setting setting = JsonConvert.DeserializeObject<Setting>(configStr);
+                if (setting.LastSize)
+                {
+                    setting.LastWidth = Width;
+                    setting.LastHeight = Height;
+                }
+                if (setting.LastSim)
+                {
+                    setting.SimSelect = Sim.SelectedIndex;
+                }
+                if (setting.LastFormat)
+                {
+                    setting.FormatSelect = Format.SelectedIndex;
+                }
+                string settingStr = JsonConvert.SerializeObject(setting, Formatting.Indented);
+                File.WriteAllText(CurrentDirectory + "\\setting.json", settingStr);
+            }
+            catch
+            {
+                MessageBox.Show("保存配置文件出错, 请检查配置文件是否存在!","错误");
+            }
+        }
         private void CopyPoint_Click(object sender, RoutedEventArgs e)
         {
             if (Color_Info.SelectedIndex != -1)
@@ -62,7 +115,7 @@ namespace ScriptGraphicHelper.Views
                 Clipboard.SetText(colorInfo.ColorStr);
             }
         }
-
+        
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             Panel_1.MaxHeight = ActualHeight - 50;
