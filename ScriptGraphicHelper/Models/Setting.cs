@@ -6,13 +6,13 @@ namespace ScriptGraphicHelper.Models
 {
     public class Setting
     {
-        public bool LastSize { get; set; }
-        public bool LastSim { get; set; }
-        public bool LastFormat { get; set; }
-        public double LastWidth { get; set; }
-        public double LastHeight { get; set; }
-        public int SimSelect { get; set; }
-        public int FormatSelect { get; set; }
+        public bool LastSize { get; set; } = true;
+        public bool LastSim { get; set; } = true;
+        public bool LastFormat { get; set; } = true;
+        public double LastWidth { get; set; } = 1760;
+        public double LastHeight { get; set; } = 990;
+        public int SimSelect { get; set; } = 0;
+        public int FormatSelect { get; set; } = 0;
 
     }
 }
