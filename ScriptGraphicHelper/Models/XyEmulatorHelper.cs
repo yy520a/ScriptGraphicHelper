@@ -7,7 +7,7 @@ using System.Text;
 using System.Windows;
 using static System.Environment;
 
-namespace 综合图色助手.Models
+namespace ScriptGraphicHelper.Models
 {
     class XyEmulatorHelper : EmulatorHelper
     {

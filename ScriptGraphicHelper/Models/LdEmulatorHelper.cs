@@ -8,7 +8,7 @@ using System;
 using System.Drawing;
 using System.Windows;
 
-namespace 综合图色助手.Models
+namespace ScriptGraphicHelper.Models
 {
     public class LdEmulatorHelper : EmulatorHelper
     {

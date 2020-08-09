@@ -3,7 +3,7 @@ using MaterialDesignThemes.Wpf;
 using System.Windows;
 using System.Windows.Media;
 
-namespace 综合图色助手.Views
+namespace ScriptGraphicHelper.Views
 {
     /// <summary>
     /// TcpInfo.xaml 的交互逻辑

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "FN+Y4TwQiXpAzzcTNOUX12UBDMRK03qbn1yWNWfikOIHo3+BewJSGjVfHlG+dKDeWqNZPfl/oEpUXrAV4kzGHQ==",
+  "dgSpecHash": "Hx4ix7XYiGmFrmWqaBA0TLHq7aX7NknQNfCqU2tcGQcz9iCqQjCUIFRpK7vTtDPfVgw1TUWxl0KtA9ZOtTVB2A==",
   "success": true,
-  "projectFilePath": "C:\\Users\\super\\source\\repos\\综合图色助手\\综合图色助手\\综合图色助手.csproj",
+  "projectFilePath": "C:\\Users\\super\\source\\repos\\ScriptGraphicHelper\\ScriptGraphicHelper\\ScriptGraphicHelper.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\super\\.nuget\\packages\\commonservicelocator\\2.0.4\\commonservicelocator.2.0.4.nupkg.sha512",
     "C:\\Users\\super\\.nuget\\packages\\dryioc.dll\\4.0.7\\dryioc.dll.4.0.7.nupkg.sha512",

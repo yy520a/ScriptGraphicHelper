@@ -63,7 +63,7 @@ namespace 综合图色助手 {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/综合图色助手;component/app.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/ScriptGraphicHelper;component/app.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\..\App.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

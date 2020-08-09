@@ -6,7 +6,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Media.Animation;
 
-namespace 综合图色助手.Models
+namespace ScriptGraphicHelper.Models
 {
     public static class CreateColorStrHelper
     {

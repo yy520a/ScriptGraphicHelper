@@ -1658,11 +1658,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\super\\source\\repos\\综合图色助手\\综合图色助手\\综合图色助手.csproj",
-      "projectName": "综合图色助手",
-      "projectPath": "C:\\Users\\super\\source\\repos\\综合图色助手\\综合图色助手\\综合图色助手.csproj",
+      "projectUniqueName": "C:\\Users\\super\\source\\repos\\ScriptGraphicHelper\\ScriptGraphicHelper\\ScriptGraphicHelper.csproj",
+      "projectName": "ScriptGraphicHelper",
+      "projectPath": "C:\\Users\\super\\source\\repos\\ScriptGraphicHelper\\ScriptGraphicHelper\\ScriptGraphicHelper.csproj",
       "packagesPath": "C:\\Users\\super\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\super\\source\\repos\\综合图色助手\\综合图色助手\\obj\\publish\\win-x64\\",
+      "outputPath": "C:\\Users\\super\\source\\repos\\ScriptGraphicHelper\\ScriptGraphicHelper\\obj\\publish\\win-x64\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"

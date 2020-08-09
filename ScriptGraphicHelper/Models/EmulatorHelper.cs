@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
 
-namespace 综合图色助手.Models
+namespace ScriptGraphicHelper.Models
 {
     public abstract class EmulatorHelper: IDisposable
     {

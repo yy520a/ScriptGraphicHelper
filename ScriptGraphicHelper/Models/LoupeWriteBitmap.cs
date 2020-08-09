@@ -7,7 +7,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-namespace 综合图色助手.Models
+namespace ScriptGraphicHelper.Models
 {
     public static class LoupeWriteBitmap
     {

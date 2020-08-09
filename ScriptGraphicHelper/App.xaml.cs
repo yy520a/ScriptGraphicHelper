@@ -1,9 +1,9 @@
 ﻿using Prism.Ioc;
-using 综合图色助手.Views;
+using ScriptGraphicHelper.Views;
 using System.Windows;
 using System;
 
-namespace 综合图色助手
+namespace ScriptGraphicHelper
 {
     /// <summary>
     /// Interaction logic for App.xaml

@@ -5,7 +5,7 @@ using System.Drawing;
 using System.IO;
 using System.Windows;
 
-namespace 综合图色助手.Models
+namespace ScriptGraphicHelper.Models
 {
     public static class MyEmulator
     {

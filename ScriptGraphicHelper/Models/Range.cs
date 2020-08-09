@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace 综合图色助手.Models
+namespace ScriptGraphicHelper.Models
 {
     public class Range
     {

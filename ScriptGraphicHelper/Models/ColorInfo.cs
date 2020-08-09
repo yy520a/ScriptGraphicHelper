@@ -4,7 +4,7 @@ using System.Windows.Media;
 using Brush = System.Windows.Media.Brush;
 using Point = System.Windows.Point;
 
-namespace 综合图色助手.Models
+namespace ScriptGraphicHelper.Models
 {
     public class ColorInfo
     {

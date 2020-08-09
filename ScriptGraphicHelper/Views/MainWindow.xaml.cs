@@ -10,11 +10,11 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
-using 综合图色助手.Models;
+using ScriptGraphicHelper.Models;
 using Color = System.Windows.Media.Color;
 using Point = System.Windows.Point;
 
-namespace 综合图色助手.Views
+namespace ScriptGraphicHelper.Views
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -65,8 +65,9 @@ namespace 综合图色助手.Views
 
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
         {
+            Panel_1.MaxHeight = ActualHeight - 50;
             Panel_2.MaxWidth = ActualWidth - Panel_1.ActualWidth - Panel_3.ActualWidth - 20;
-            Panel_2.MaxHeight = ActualHeight - 30;
+            Panel_2.MaxHeight = ActualHeight - 45;
             Color_Info.MaxHeight = ActualHeight - 100;
         }
 

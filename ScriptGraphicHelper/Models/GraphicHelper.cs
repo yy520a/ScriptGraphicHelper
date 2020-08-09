@@ -12,7 +12,7 @@ enum Anchors
     R = 2
 }
 
-namespace 综合图色助手.Models
+namespace ScriptGraphicHelper.Models
 {
     public static class GraphicHelper
     {

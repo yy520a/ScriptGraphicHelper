@@ -1,29 +1,26 @@
 ﻿using Microsoft.Win32;
 using Prism.Commands;
 using Prism.Mvvm;
+using ScriptGraphicHelper.Models;
+using ScriptGraphicHelper.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
-using 综合图色助手.Models;
-using 综合图色助手.Views;
 using Color = System.Drawing.Color;
 using Point = System.Windows.Point;
-using Range = 综合图色助手.Models.Range;
+using Range = ScriptGraphicHelper.Models.Range;
 
-namespace 综合图色助手.ViewModels
+namespace ScriptGraphicHelper.ViewModels
 {
     public class MainWindowViewModel : BindableBase
     {
@@ -345,7 +342,7 @@ namespace 综合图色助手.ViewModels
                              Range rect = GetRange();
                              string str = CreateColorStrHelper.Create(1, ColorInfos, rect);
                              string[] strArray = str.Split("\",\"");
-                             if (strArray[1].Length<=3)
+                             if (strArray[1].Length <= 3)
                              {
                                  MessageBox.Show("多点找色至少需要勾选两个颜色才可进行测试!", "错误");
                                  TestResult = "exception";
@@ -355,8 +352,8 @@ namespace 综合图色助手.ViewModels
                              System.Drawing.Point result = GraphicHelper.FindMultiColor((int)rect.Left, (int)rect.Top, (int)rect.Right, (int)rect.Bottom, _[1].Trim('"'), strArray[1].Trim('"'), sim[SimSelectedIndex]);
                              if (result.X >= 0 && result.Y >= 0)
                              {
-                                 Point point = e.Img.TranslatePoint(new Point(result.X,result.Y), e);
-                                 FindResultMargin = new Thickness(point.X -14, point.Y - 38, 0, 0);
+                                 Point point = e.Img.TranslatePoint(new Point(result.X, result.Y), e);
+                                 FindResultMargin = new Thickness(point.X - 14, point.Y - 38, 0, 0);
                                  FindResultVisibility = Visibility.Visible;
                              }
                              TestResult = result.ToString();

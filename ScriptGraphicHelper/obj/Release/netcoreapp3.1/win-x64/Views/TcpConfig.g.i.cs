@@ -80,7 +80,7 @@ namespace 综合图色助手.Views {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/综合图色助手;component/views/tcpconfig.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/ScriptGraphicHelper;component/views/tcpconfig.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\..\..\Views\TcpConfig.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

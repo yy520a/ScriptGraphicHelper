@@ -7,9 +7,9 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Windows;
-using 综合图色助手.Views;
+using ScriptGraphicHelper.Views;
 
-namespace 综合图色助手.Models
+namespace ScriptGraphicHelper.Models
 {
     class MobileTcpHelper : EmulatorHelper
     {
@@ -147,9 +147,9 @@ namespace 综合图色助手.Models
                     {
                         for (int x = 0; x < Width; x++)
                         {
-                            ptr[site] = data[site + 2];
+                            ptr[site + 0] = data[site + 2];
                             ptr[site + 1] = data[site + 1];
-                            ptr[site + 2] = data[site];
+                            ptr[site + 2] = data[site + 0];
                             ptr[site + 3] = data[site + 3];
                             site += 4;
                         }

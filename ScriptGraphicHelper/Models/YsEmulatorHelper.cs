@@ -6,7 +6,7 @@ using System.IO;
 using System.Windows;
 using static System.Environment;
 
-namespace 综合图色助手.Models
+namespace ScriptGraphicHelper.Models
 {
     class YsEmulatorHelper : EmulatorHelper
     {
