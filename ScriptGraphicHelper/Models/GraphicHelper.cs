@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
-using System.Text;
 
 enum Anchors
 {
@@ -118,9 +116,10 @@ namespace ScriptGraphicHelper.Models
                         OffsetRGB[2] = Convert.ToByte(findColorS[1].Substring(4, 2), 16);
                     }
                     byte[] GetRGB = GetPixel(findX, findY);
-                    if (Math.Abs(GetRGB[0] - findRGB[0]) > (OffsetRGB[0] + similarity) ||
-                        Math.Abs(GetRGB[1] - findRGB[1]) > (OffsetRGB[1] + similarity) ||
-                        Math.Abs(GetRGB[2] - findRGB[2]) > (OffsetRGB[2] + similarity))
+                    double offsetR = (OffsetRGB[0] + similarity) < 255 ? (OffsetRGB[0] + similarity) : 255;
+                    double offsetG = (OffsetRGB[1] + similarity) < 255 ? (OffsetRGB[0] + similarity) : 255;
+                    double offsetB = (OffsetRGB[2] + similarity) < 255 ? (OffsetRGB[0] + similarity) : 255;
+                    if (Math.Abs(GetRGB[0] - findRGB[0]) > offsetR || Math.Abs(GetRGB[1] - findRGB[1]) > offsetG || Math.Abs(GetRGB[2] - findRGB[2]) > offsetB)
                     {
                         return false;
                     }

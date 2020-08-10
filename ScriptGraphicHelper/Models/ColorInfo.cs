@@ -1,18 +1,24 @@
-﻿using System;
-using System.Drawing;
+﻿using Prism.Mvvm;
+using System;
 using System.Windows.Media;
 using Brush = System.Windows.Media.Brush;
 using Point = System.Windows.Point;
 
 namespace ScriptGraphicHelper.Models
 {
-    public class ColorInfo
+    public class ColorInfo: BindableBase
     {
         public int Index { get; set; }
         public string Anchors { get; set; }
         public string PointStr { get; set; }
         public string ColorStr { get; set; }
-        public string OffsetColor { get; set; }
+
+        private string _offsetColor;
+        public string OffsetColor
+        {
+            get { return _offsetColor; }
+            set { SetProperty(ref _offsetColor, value.ToUpper()); }
+        }
         public bool IsChecked { get; set; }
         public Brush TheBrush { get; set; }
         public System.Drawing.Color TheColor { get; set; }
@@ -33,7 +39,7 @@ namespace ScriptGraphicHelper.Models
             Anchors = "L";
             PointStr = point.X.ToString() + "," + point.Y.ToString();
             ColorStr = "#" + color.R.ToString("X2") + color.G.ToString("X2") + color.B.ToString("X2");
-            OffsetColor = AllOffsetColor;
+            OffsetColor = AllOffsetColor.ToString();
             TheBrush = new SolidColorBrush(System.Windows.Media.Color.FromArgb(color.A, color.R, color.G, color.B));
             IsChecked = true;
         }
@@ -53,5 +59,7 @@ namespace ScriptGraphicHelper.Models
             Width = width;
             Height = height;
         }
+
+        
     }
 }

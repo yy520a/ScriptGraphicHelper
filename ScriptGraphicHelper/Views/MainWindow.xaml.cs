@@ -15,6 +15,7 @@ using Color = System.Windows.Media.Color;
 using Point = System.Windows.Point;
 using Newtonsoft.Json;
 using static System.Environment;
+using System.Windows.Controls;
 
 namespace ScriptGraphicHelper.Views
 {
@@ -62,10 +63,7 @@ namespace ScriptGraphicHelper.Views
                     Format.SelectedIndex = setting.FormatSelect;
                 }
             }
-            catch
-            {
-                MessageBox.Show("读取配置文件出错, 将使用默认配置!", "错误");
-            }
+            catch { }
         }
         private void Window_Closed(object sender, EventArgs e)
         {
@@ -94,87 +92,103 @@ namespace ScriptGraphicHelper.Views
             {
                 setting.FormatSelect = Format.SelectedIndex;
             }
+           
             string settingStr = JsonConvert.SerializeObject(setting, Formatting.Indented);
             File.WriteAllText(CurrentDirectory + "\\setting.json", settingStr);
         }
 
-    private void CopyPoint_Click(object sender, RoutedEventArgs e)
-    {
-        if (Color_Info.SelectedIndex != -1)
+        private void CopyPoint_Click(object sender, RoutedEventArgs e)
         {
-            IList<ColorInfo> colorInfos = (IList<ColorInfo>)Color_Info.ItemsSource;
-            ColorInfo colorInfo = colorInfos[Color_Info.SelectedIndex];
-            Clipboard.SetText(colorInfo.PointStr);
-        }
-    }
-
-    private void CopyColor_Click(object sender, RoutedEventArgs e)
-    {
-        if (Color_Info.SelectedIndex != -1)
-        {
-            IList<ColorInfo> colorInfos = (IList<ColorInfo>)Color_Info.ItemsSource;
-            ColorInfo colorInfo = colorInfos[Color_Info.SelectedIndex];
-            Clipboard.SetText(colorInfo.ColorStr);
-        }
-    }
-
-    private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
-    {
-        Panel_1.MaxHeight = ActualHeight - 50;
-        Panel_2.MaxWidth = ActualWidth - Panel_1.ActualWidth - Panel_3.ActualWidth - 20;
-        Panel_2.MaxHeight = ActualHeight - 45;
-        Color_Info.MaxHeight = ActualHeight - 100;
-    }
-
-    [DllImport("user32.dll")]
-    private static extern int SetCursorPos(int x, int y);
-    private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
-    {
-        Key key = e.Key;
-        Point point = PointToScreen(Mouse.GetPosition(this));
-        if (Panel_4.Visibility == Visibility.Visible)
-        {
-            if (key == Key.Up)
+            if (Color_Info.SelectedIndex != -1)
             {
-                SetCursorPos((int)point.X, (int)point.Y - 1);
+                IList<ColorInfo> colorInfos = (IList<ColorInfo>)Color_Info.ItemsSource;
+                ColorInfo colorInfo = colorInfos[Color_Info.SelectedIndex];
+                Clipboard.SetText(colorInfo.PointStr);
             }
-            else if (key == Key.Down)
-            {
-                SetCursorPos((int)point.X, (int)point.Y + 1);
-            }
-            else if (key == Key.Left)
-            {
-                SetCursorPos((int)point.X - 1, (int)point.Y);
-            }
-            else if (key == Key.Right)
-            {
-                SetCursorPos((int)point.X + 1, (int)point.Y);
-            }
-            e.Handled = true;
         }
 
-    }
-    private void Copy_Click(object sender, RoutedEventArgs e)
-    {
-        Clipboard.SetText(ColorString.Text);
-    }
-
-    private void Panel_5_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
-    {
-        if (Panel_5.Visibility == Visibility.Visible)
+        private void CopyColor_Click(object sender, RoutedEventArgs e)
         {
-            showTimer.Interval = new TimeSpan(0, 0, 0, 5);
-            showTimer.Start();
+            if (Color_Info.SelectedIndex != -1)
+            {
+                IList<ColorInfo> colorInfos = (IList<ColorInfo>)Color_Info.ItemsSource;
+                ColorInfo colorInfo = colorInfos[Color_Info.SelectedIndex];
+                Clipboard.SetText(colorInfo.ColorStr);
+            }
         }
-    }
 
-    private void Panel_5_SetVisibility(object sender, EventArgs e)
-    {
-        if (Panel_5.Visibility == Visibility.Visible)
+        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            Panel_5.Visibility = Visibility.Hidden;
-            showTimer.Stop();
+            Panel_1.MaxHeight = ActualHeight - 50;
+            Panel_2.MaxWidth = ActualWidth - Panel_1.ActualWidth - Panel_3.ActualWidth - 20;
+            Panel_2.MaxHeight = ActualHeight - 45;
+            Color_Info.MaxHeight = ActualHeight - 100;
+        }
+
+        [DllImport("user32.dll")]
+        private static extern int SetCursorPos(int x, int y);
+        private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            Key key = e.Key;
+            Point point = PointToScreen(Mouse.GetPosition(this));
+            if (Panel_4.Visibility == Visibility.Visible)
+            {
+                if (key == Key.Up)
+                {
+                    SetCursorPos((int)point.X, (int)point.Y - 1);
+                }
+                else if (key == Key.Down)
+                {
+                    SetCursorPos((int)point.X, (int)point.Y + 1);
+                }
+                else if (key == Key.Left)
+                {
+                    SetCursorPos((int)point.X - 1, (int)point.Y);
+                }
+                else if (key == Key.Right)
+                {
+                    SetCursorPos((int)point.X + 1, (int)point.Y);
+                }
+                e.Handled = true;
+            }
+
+        }
+        private void Copy_Click(object sender, RoutedEventArgs e)
+        {
+            Clipboard.SetText(ColorString.Text);
+        }
+
+        private void Panel_5_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (Panel_5.Visibility == Visibility.Visible)
+            {
+                showTimer.Interval = new TimeSpan(0, 0, 0, 5);
+                showTimer.Start();
+            }
+        }
+
+        private void Panel_5_SetVisibility(object sender, EventArgs e)
+        {
+            if (Panel_5.Visibility == Visibility.Visible)
+            {
+                Panel_5.Visibility = Visibility.Hidden;
+                showTimer.Stop();
+            }
+        }
+
+        private void OffsetListState_Click(object sender, RoutedEventArgs e)
+        {
+            if (OffsetListState.Header.ToString() == "显示偏色列表")
+            {
+                OffsetList.Visibility = Visibility.Visible;
+                OffsetListState.Header = "隐藏偏色列表";
+            }
+            else
+            {
+                OffsetList.Visibility = Visibility.Collapsed;
+                OffsetListState.Header = "显示偏色列表";
+            }
+
         }
     }
-}
 }

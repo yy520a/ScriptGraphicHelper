@@ -119,6 +119,7 @@
                         <DataGridTextColumn Header="序号" Binding="{Binding Index}" ElementStyle="{DynamicResource MaterialDesignDataGridTextColumnStyle}" IsReadOnly="True"/>
                         <materialDesign:DataGridComboBoxColumn x:Name="TheAnchors" Header="锚点" SelectedValueBinding="{Binding Anchors}"  ItemsSourceBinding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}, Path=DataContext.AnchorsValue}" Visibility="Collapsed"/>
                         <DataGridTextColumn Header="坐标" Binding="{Binding PointStr}" ElementStyle="{DynamicResource MaterialDesignDataGridTextColumnStyle}" IsReadOnly="True"/>
+                        
                         <DataGridTemplateColumn Header="颜色" IsReadOnly="True">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
@@ -126,6 +127,7 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
+                        <DataGridTextColumn x:Name="OffsetList" Header="偏色" Binding="{Binding OffsetColor,Mode=TwoWay}" ElementStyle="{DynamicResource MaterialDesignDataGridTextColumnStyle}" IsReadOnly="False" Visibility="Hidden"/>
                         <DataGridCheckBoxColumn Header="状态" Binding="{Binding IsChecked,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" ElementStyle="{DynamicResource MaterialDesignDataGridCheckBoxColumnStyle}"/>
                     </DataGrid.Columns>
                     <DataGrid.ContextMenu>
@@ -135,6 +137,7 @@
                             <MenuItem Header="添加偏色" Command="{Binding Offset_Click}"/>
                             <MenuItem Header="添加全局偏色" Command="{Binding AllOffset_Click}"/>
                             <MenuItem Header="清除全局偏色" Command="{Binding AllOffsetClear_Click}"/>
+                            <MenuItem Name="OffsetListState" Header="显示偏色列表" Click="OffsetListState_Click"/>
                             <MenuItem Header="清空列表" Command="{Binding ClearData_Click}"/>
                         </ContextMenu>
                     </DataGrid.ContextMenu>
