@@ -25,7 +25,7 @@ namespace ScriptGraphicHelper.ViewModels
 {
     public class MainWindowViewModel : BindableBase
     {
-        private string _title = "综合图色助手 V1.0.7";
+        private string _title = "综合图色助手 V1.0.8";
         public string Title
         {
             get { return _title; }
