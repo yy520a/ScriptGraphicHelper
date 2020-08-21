@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using Newtonsoft.Json;
 using Prism.Commands;
 using Prism.Mvvm;
 using ScriptGraphicHelper.Models;
@@ -20,17 +21,13 @@ using System.Windows.Threading;
 using Color = System.Drawing.Color;
 using Point = System.Windows.Point;
 using Range = ScriptGraphicHelper.Models.Range;
+using static System.Environment;
+using Prism.Services.Dialogs;
 
 namespace ScriptGraphicHelper.ViewModels
 {
     public class MainWindowViewModel : BindableBase
     {
-        private string _title = "综合图色助手 V1.0.8";
-        public string Title
-        {
-            get { return _title; }
-            set { SetProperty(ref _title, value); }
-        }
         private string _emulatorOptionsHint;
         public string EmulatorOptionsHint
         {
@@ -184,6 +181,7 @@ namespace ScriptGraphicHelper.ViewModels
             set { SetProperty(ref _findResultVisibility, value); }
         }
 
+
         private int _colorInfoSelect;
         public int ColorInfoSelect
         {
@@ -333,16 +331,16 @@ namespace ScriptGraphicHelper.ViewModels
                      if (Bmp != null && ColorInfos.Count > 0)
                      {
                          byte[] sim = new byte[] { 100, 95, 90, 85, 80 };
-                         if (FormatSelectedIndex == 0)
+                         if (FormatSelectedIndex == 0 || FormatSelectedIndex == 3 || FormatSelectedIndex == 5)
                          {
                              string str = CreateColorStrHelper.Create(0, ColorInfos);
                              TestResult = GraphicHelper.CompareColor(str.Trim('"'), sim[SimSelectedIndex]).ToString();
                          }
-                         else if (FormatSelectedIndex == 8)
+                         else if (FormatSelectedIndex == 9)
                          {
                              double width = ColorInfos[0].Width;
                              double height = ColorInfos[1].Height;
-                             string str = CreateColorStrHelper.Create(9, ColorInfos);
+                             string str = CreateColorStrHelper.Create(10, ColorInfos);
                              TestResult = GraphicHelper.AnchorsCompareColor(width, height, str.Trim('"'), sim[SimSelectedIndex]).ToString();
                          }
                          else
@@ -393,7 +391,7 @@ namespace ScriptGraphicHelper.ViewModels
                  });
         public ICommand Format_SelectionChanged => new DelegateCommand<MainWindow>((e) =>
         {
-            if (FormatSelectedIndex == 8)
+            if (FormatSelectedIndex == 9)
             {
                 e.TheAnchors.Visibility = Visibility.Visible;
                 ColorInfos.Clear();
@@ -528,7 +526,7 @@ namespace ScriptGraphicHelper.ViewModels
             }
             byte[] bytes = GraphicHelper.GetPixel((int)PointX, (int)PointY);
             Color color = Color.FromArgb(255, bytes[0], bytes[1], bytes[2]);
-            if (FormatSelectedIndex != 8)
+            if (FormatSelectedIndex != 9)
             {
                 ColorInfos.Add(new ColorInfo(ColorInfos.Count, new Point(PointX, PointY), color));
             }
@@ -582,9 +580,9 @@ namespace ScriptGraphicHelper.ViewModels
                      }
                  });
 
-        public ICommand Offset_Click => new DelegateCommand(() =>
+        public ICommand AddOffset_Click => new DelegateCommand(() =>
         {
-            if (ColorInfos.Count>0)
+            if (ColorInfos.Count > 0)
             {
                 if (ColorInfoSelect != -1)
                 {
@@ -596,32 +594,178 @@ namespace ScriptGraphicHelper.ViewModels
                 }
             }
         });
-        public ICommand AllOffset_Click => new DelegateCommand(() =>
+        public ICommand GetOffset_Click => new DelegateCommand(() =>
         {
-            Offset offset = new Offset();
-            if ((bool)offset.ShowDialog())
+            if (ColorInfos.Count == 0 || ColorInfoSelect == -1)
             {
-                for (int i = 0; i < ColorInfos.Count; i++)
+                return;
+            }
+            bool isMultiple = false;
+            int k = -1;
+            Point point = ColorInfos[ColorInfoSelect].ThePoint;
+            for (int i = 0; i < ColorInfos.Count; i++)
+            {
+                if (ColorInfos[i].ThePoint == point)
                 {
-                    if (ColorInfos[i].OffsetColor == "000000")
+                    if (i != ColorInfoSelect)
                     {
-                        ColorInfos[i].OffsetColor = offset.Result;
+                        isMultiple = true;
+                        k = i;
                     }
                 }
-                ColorInfo.AllOffsetColor = offset.Result;
+            }
+            int startNum = k;
+            int endNum = ColorInfoSelect;
+            if (k > ColorInfoSelect)
+            {
+                startNum = ColorInfoSelect;
+                endNum = k;
+            }
+            if (isMultiple)
+            {
+                byte[] miniColor = new byte[] { 255, 255, 255 };
+                byte[] maxColor = new byte[] { 0, 0, 0 };
+                for (int i = startNum; i <= endNum; i++)
+                {
+                    Color color = ColorInfos[i].TheColor;
+                    if (color.R < miniColor[0])
+                        miniColor[0] = color.R;
+                    if (color.G < miniColor[1])
+                        miniColor[1] = color.G;
+                    if (color.B < miniColor[2])
+                        miniColor[2] = color.B;
+                    if (color.R > maxColor[0])
+                        maxColor[0] = color.R;
+                    if (color.G > maxColor[1])
+                        maxColor[1] = color.G;
+                    if (color.B > maxColor[2])
+                        maxColor[2] = color.B;
+                }
+                byte[] result = new byte[3];
+                result[0] = (byte)((maxColor[0] - miniColor[0]) / 2);
+                result[1] = (byte)((maxColor[1] - miniColor[1]) / 2);
+                result[2] = (byte)((maxColor[2] - miniColor[2]) / 2);
+
+                ColorInfos[startNum].OffsetColor = result[0].ToString("X2") + result[1].ToString("X2") + result[2].ToString("X2");
+
+                result[0] = (byte)(miniColor[0] + result[0]);
+                result[1] = (byte)(miniColor[1] + result[1]);
+                result[2] = (byte)(miniColor[2] + result[2]);
+
+                ColorInfos[startNum].ColorStr = "#" + result[0].ToString("X2") + result[1].ToString("X2") + result[2].ToString("X2");
+
+                ColorInfos[startNum].TheColor = Color.FromArgb(0xFF, result[0], result[1], result[2]);
+
+                ColorInfos[startNum].Brush = new SolidColorBrush(System.Windows.Media.Color.FromRgb(result[0], result[1], result[2]));
+
+                for (int i = endNum; i > startNum; i--)
+                {
+                    ColorInfos.Remove(ColorInfos[i]);
+                }
+            }
+            else
+            {
+                int select = ColorInfoSelect;
+                if (ColorInfos.Count - 1 == ColorInfoSelect)
+                {
+                    select = ColorInfoSelect - 1;
+                }
+
+                Color color_1 = ColorInfos[select].TheColor;
+                Color color_2 = ColorInfos[select + 1].TheColor;
+
+                byte[] result = new byte[3];
+                result[0] = (byte)(Math.Abs(color_1.R - color_2.R) / 2);
+                result[1] = (byte)(Math.Abs(color_1.G - color_2.G) / 2);
+                result[2] = (byte)(Math.Abs(color_1.B - color_2.B) / 2);
+
+                ColorInfos[select].OffsetColor = result[0].ToString("X2") + result[1].ToString("X2") + result[2].ToString("X2");
+
+                result[0] = (byte)(color_1.R >= color_2.R ? result[0] + color_2.R : result[0] + color_1.R);
+                result[1] = (byte)(color_1.G >= color_2.G ? result[1] + color_2.G : result[1] + color_1.G);
+                result[2] = (byte)(color_1.B >= color_2.B ? result[2] + color_2.B : result[2] + color_1.B);
+
+                ColorInfos[select].ColorStr = "#" + result[0].ToString("X2") + result[1].ToString("X2") + result[2].ToString("X2");
+
+                ColorInfos[select].TheColor = Color.FromArgb(0xFF, result[0], result[1], result[2]);
+
+                ColorInfos[select].Brush = new SolidColorBrush(System.Windows.Media.Color.FromRgb(result[0], result[1], result[2]));
+
+                ColorInfos.Remove(ColorInfos[select + 1]);
+
             }
         });
-        public ICommand AllOffsetClear_Click => new DelegateCommand(() =>
+        public ICommand ConfigSet_Click => new DelegateCommand<MainWindow>((e) =>
+        {
+            Setting setting;
+            try
+            {
+                StreamReader sr = File.OpenText(CurrentDirectory + "\\setting.json");
+                string configStr = sr.ReadToEnd();
+                sr.Close();
+                setting = JsonConvert.DeserializeObject<Setting>(configStr);
+            }
+            catch
+            {
+                setting = new Setting();
+            }
+            setting.LastOffsetColorShow = e.OffsetList.Visibility == Visibility.Visible;
+            setting.LastAllOffset = ColorInfo.AllOffsetColor;
+            setting.LastHintColorShow = ColorInfo.BrushMode;
+            Config config = new Config(setting);
+            if ((bool)config.ShowDialog())
+            {
+                Setting result = config._Setting;
+                if (result.LastSize != setting.LastSize)
+                {
+                    setting.LastSize = result.LastSize;
+                    string settingStr = JsonConvert.SerializeObject(setting, Formatting.Indented);
+                    File.WriteAllText(CurrentDirectory + "\\setting.json", settingStr);
+                }
+                if (result.LastOffsetColorShow != (e.OffsetList.Visibility == Visibility.Visible))
+                {
+                    e.OffsetList.Visibility = result.LastOffsetColorShow ? Visibility.Visible : Visibility.Hidden;
+                }
+                if (result.LastHintColorShow != ColorInfo.BrushMode)
+                {
+                    HintColorsChanged(result.LastHintColorShow);
+                }
+                if (result.LastAllOffset != ColorInfo.AllOffsetColor)
+                {
+                    AllOffsetChanged(result.LastAllOffset);
+                }
+            }
+        });
+        public void AllOffsetChanged(string offsetStr)
         {
             for (int i = 0; i < ColorInfos.Count; i++)
             {
                 if (ColorInfos[i].OffsetColor == ColorInfo.AllOffsetColor)
                 {
-                    ColorInfos[i].OffsetColor = "000000";
+                    ColorInfos[i].OffsetColor = offsetStr;
                 }
             }
-            ColorInfo.AllOffsetColor = "000000";
-        });
+            ColorInfo.AllOffsetColor = offsetStr;
+        }
+
+        public void HintColorsChanged(int brushMode)
+        {
+            ColorInfo.BrushMode = brushMode;
+            for (int i = 0; i < ColorInfos.Count; i++)
+            {
+                if (brushMode == 0)
+                {
+                    ColorInfos[i].Brush_1 = ColorInfos[i].Brush_2;
+                    ColorInfos[i].Brush_2 = new SolidColorBrush(System.Windows.Media.Color.FromRgb(0x66, 0x66, 0x66));
+                }
+                else
+                {
+                    ColorInfos[i].Brush_2 = ColorInfos[i].Brush_1;
+                    ColorInfos[i].Brush_1 = new SolidColorBrush(System.Windows.Media.Color.FromRgb(0XFF, 0XFF, 0XFF));
+                }
+            }
+        }
+
         [DllImport("gdi32.dll")]
         public static extern bool DeleteObject(IntPtr hObject);
         private ImageSource Bitmap2BitmapImage(Bitmap bitmap)

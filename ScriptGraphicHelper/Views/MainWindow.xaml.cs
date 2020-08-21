@@ -15,7 +15,6 @@ using Color = System.Windows.Media.Color;
 using Point = System.Windows.Point;
 using Newtonsoft.Json;
 using static System.Environment;
-using System.Windows.Controls;
 
 namespace ScriptGraphicHelper.Views
 {
@@ -24,7 +23,6 @@ namespace ScriptGraphicHelper.Views
     /// </summary>
     public partial class MainWindow : Window
     {
-
         private DispatcherTimer showTimer = new DispatcherTimer();
         public MainWindow()
         {
@@ -40,9 +38,7 @@ namespace ScriptGraphicHelper.Views
             theme.SecondaryMid = new ColorPair(Color.FromRgb(0x66, 0x66, 0x66), Colors.White);
             theme.PrimaryMid = new ColorPair(Color.FromRgb(0x66, 0x66, 0x66), Colors.White);
             paletteHelper.SetTheme(theme);
-            FocusManager.SetFocusedElement(Img, SelectRectangle);
 
-            showTimer.Tick += new EventHandler(Panel_5_SetVisibility);
             try
             {
                 StreamReader sr = File.OpenText(CurrentDirectory + "\\setting.json");
@@ -54,16 +50,24 @@ namespace ScriptGraphicHelper.Views
                     Width = setting.LastWidth;
                     Height = setting.LastHeight;
                 }
-                if (setting.LastSim && Sim.Items.Count > setting.SimSelect)
-                {
-                    Sim.SelectedIndex = setting.SimSelect;
-                }
-                if (setting.LastFormat && Format.Items.Count > setting.SimSelect)
-                {
-                    Format.SelectedIndex = setting.FormatSelect;
-                }
+                Sim.SelectedIndex = setting.LastSim;
+                Format.SelectedIndex = setting.LastFormat;
+                OffsetList.Visibility = setting.LastOffsetColorShow ? Visibility.Visible : Visibility.Collapsed;
+                ColorInfo.AllOffsetColor = setting.LastAllOffset;
+                ColorInfo.BrushMode = setting.LastHintColorShow;
             }
             catch { }
+            
+            showTimer.Tick += new EventHandler(HintMessage_Closed);
+            showTimer.Interval = new TimeSpan(0, 0, 0, 5);
+            showTimer.Start();
+        }
+        private void HintMessage_Closed(object sender, EventArgs e)
+        {
+            var i = Color_Info.SelectedCells;
+            AboutHint.IsActive = false;
+            showTimer.Tick -= new EventHandler(HintMessage_Closed);
+            showTimer.Tick += new EventHandler(Panel_5_SetVisibility);
         }
         private void Window_Closed(object sender, EventArgs e)
         {
@@ -84,15 +88,11 @@ namespace ScriptGraphicHelper.Views
                 setting.LastWidth = Width;
                 setting.LastHeight = Height;
             }
-            if (setting.LastSim)
-            {
-                setting.SimSelect = Sim.SelectedIndex;
-            }
-            if (setting.LastFormat)
-            {
-                setting.FormatSelect = Format.SelectedIndex;
-            }
-           
+            setting.LastSim = Sim.SelectedIndex;
+            setting.LastFormat = Format.SelectedIndex;
+            setting.LastOffsetColorShow = OffsetList.Visibility == Visibility.Visible;
+            setting.LastHintColorShow = ColorInfo.BrushMode;
+            setting.LastAllOffset = ColorInfo.AllOffsetColor;
             string settingStr = JsonConvert.SerializeObject(setting, Formatting.Indented);
             File.WriteAllText(CurrentDirectory + "\\setting.json", settingStr);
         }
@@ -136,22 +136,29 @@ namespace ScriptGraphicHelper.Views
                 if (key == Key.Up)
                 {
                     SetCursorPos((int)point.X, (int)point.Y - 1);
+                    e.Handled = true;
                 }
                 else if (key == Key.Down)
                 {
                     SetCursorPos((int)point.X, (int)point.Y + 1);
+                    e.Handled = true;
                 }
                 else if (key == Key.Left)
                 {
                     SetCursorPos((int)point.X - 1, (int)point.Y);
+                    e.Handled = true;
                 }
                 else if (key == Key.Right)
                 {
                     SetCursorPos((int)point.X + 1, (int)point.Y);
+                    e.Handled = true;
                 }
-                e.Handled = true;
             }
-
+            if (key == Key.F3)
+            {
+                //Description description = new Description();
+                //description.ShowDialog();
+            }
         }
         private void Copy_Click(object sender, RoutedEventArgs e)
         {
@@ -176,19 +183,5 @@ namespace ScriptGraphicHelper.Views
             }
         }
 
-        private void OffsetListState_Click(object sender, RoutedEventArgs e)
-        {
-            if (OffsetListState.Header.ToString() == "显示偏色列表")
-            {
-                OffsetList.Visibility = Visibility.Visible;
-                OffsetListState.Header = "隐藏偏色列表";
-            }
-            else
-            {
-                OffsetList.Visibility = Visibility.Collapsed;
-                OffsetListState.Header = "显示偏色列表";
-            }
-
-        }
     }
 }

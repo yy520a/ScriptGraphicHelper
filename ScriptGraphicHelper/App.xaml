@@ -4,12 +4,17 @@
              xmlns:local="clr-namespace:ScriptGraphicHelper"
              xmlns:prism="http://prismlibrary.com/" 
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
+    
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <materialDesign:CustomColorTheme BaseTheme="Dark" PrimaryColor="#666666" SecondaryColor="DarkGreen" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <Style x:Key="MaterialDesignDataGridColumnHeader_Center" BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}" TargetType="{x:Type DataGridColumnHeader}">
+                <Setter Property="HorizontalAlignment" Value="Center" />
+            </Style>
         </ResourceDictionary>
+        
     </Application.Resources>
 </prism:PrismApplication>

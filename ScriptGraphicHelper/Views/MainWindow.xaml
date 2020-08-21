@@ -10,9 +10,13 @@
         TextElement.FontSize="14"
         FontFamily="{materialDesign:MaterialDesignFont}"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-        Title="{Binding Title}" Width="1760" Height="990" Loaded="Window_Loaded" Closed="Window_Closed" SizeChanged="Window_SizeChanged" PreviewKeyDown="Window_PreviewKeyDown">
-
+        Title="综合图色助手 V1.0.9" Width="1760" Height="990" Loaded="Window_Loaded" Closed="Window_Closed" SizeChanged="Window_SizeChanged" PreviewKeyDown="Window_PreviewKeyDown">
+    <Window.InputBindings>
+        <KeyBinding  Key="F1" Gesture="F1"  Command="{Binding ClearData_Click}"></KeyBinding>
+        <KeyBinding  Key="F2" Gesture="F2"  Command="{Binding ConfigSet_Click}" CommandParameter="{Binding ElementName=_Window}"></KeyBinding>
+    </Window.InputBindings>
     <Grid>
+        <materialDesign:Snackbar x:Name="AboutHint" Message="F1清空表格, F2更改配置" IsActive="True" VerticalAlignment="Top" Padding="40,0,0,0"/>
         <ContentControl prism:RegionManager.RegionName="ContentRegion" />
         <Grid x:Name="Panel_1" Width="auto" Height="auto" HorizontalAlignment="Left" VerticalAlignment="Top">
             <ScrollViewer x:Name="Scroll" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden" CanContentScroll="False" Focusable="False" Style="{DynamicResource MaterialDesignScrollViewer}">
@@ -79,6 +83,7 @@
                         <ComboBoxItem>触动多点比色格式</ComboBoxItem>
                         <ComboBoxItem>AJ多点找色格式</ComboBoxItem>
                         <ComboBoxItem>EC多点找色格式</ComboBoxItem>
+                        <ComboBoxItem>自定义格式</ComboBoxItem>
                         <ComboBoxItem>锚点多点比色格式</ComboBoxItem>
                     </ComboBox>
                     <TextBox x:Name="Range" Margin="20,10" Width="120" Text="{Binding Range,Mode=TwoWay}"
@@ -99,45 +104,69 @@
                 </StackPanel>
             </ScrollViewer>
         </Grid>
-        
-
         <StackPanel x:Name="Panel_3" Width="auto" Height="auto" HorizontalAlignment="Right" VerticalAlignment="Top" SizeChanged="Window_SizeChanged">
             <Border Margin="15,15" BorderBrush="#666666" BorderThickness ="1" Style="{DynamicResource MaterialDesignToolBarMainPanelBorderStyle}">
                 <DataGrid x:Name="Color_Info" FontSize="16" ItemsSource="{Binding ColorInfos, Mode=TwoWay}"
                    SelectedIndex="{Binding ColorInfoSelect,Mode=TwoWay}"
+                   
                    Style="{DynamicResource MaterialDesignDataGrid}"
+                   ColumnHeaderStyle="{DynamicResource MaterialDesignDataGridColumnHeader_Center}"
                    RowHeaderStyle="{DynamicResource MaterialDesignDataGridRowHeader}"
                    RowStyle="{DynamicResource MaterialDesignDataGridRow}"
                    CanUserSortColumns="False"
                    CanUserAddRows="False"
                    SelectionUnit="FullRow"
-                   SelectionMode="Single"
+                   SelectionMode="Extended"
                    AutoGenerateColumns="False"
                    AllowDrop="true"
-                   materialDesign:DataGridAssist.ColumnHeaderPadding="6">
+                   materialDesign:DataGridAssist.ColumnHeaderPadding="4,6,4,6">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="序号" Binding="{Binding Index}" ElementStyle="{DynamicResource MaterialDesignDataGridTextColumnStyle}" IsReadOnly="True"/>
-                        <materialDesign:DataGridComboBoxColumn x:Name="TheAnchors" Header="锚点" SelectedValueBinding="{Binding Anchors}"  ItemsSourceBinding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}, Path=DataContext.AnchorsValue}" Visibility="Collapsed"/>
-                        <DataGridTextColumn Header="坐标" Binding="{Binding PointStr}" ElementStyle="{DynamicResource MaterialDesignDataGridTextColumnStyle}" IsReadOnly="True"/>
-                        
-                        <DataGridTemplateColumn Header="颜色" IsReadOnly="True">
+                        <DataGridTemplateColumn Header="序号" IsReadOnly="True">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding ColorStr}" Foreground="{Binding TheBrush}"/>
+                                    <TextBlock Text="{Binding Index}" HorizontalAlignment="Center"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTextColumn x:Name="OffsetList" Header="偏色" Binding="{Binding OffsetColor,Mode=TwoWay}" ElementStyle="{DynamicResource MaterialDesignDataGridTextColumnStyle}" IsReadOnly="False" Visibility="Hidden"/>
-                        <DataGridCheckBoxColumn Header="状态" Binding="{Binding IsChecked,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" ElementStyle="{DynamicResource MaterialDesignDataGridCheckBoxColumnStyle}"/>
+                        <materialDesign:DataGridComboBoxColumn x:Name="TheAnchors" Header="锚点" SelectedValueBinding="{Binding Anchors}"  ItemsSourceBinding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}, Path=DataContext.AnchorsValue}" Visibility="Collapsed"/>
+                        <DataGridTemplateColumn Header="坐标" IsReadOnly="True">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding PointStr}" HorizontalAlignment="Center"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="颜色" IsReadOnly="True">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding ColorStr}" Foreground="{Binding Brush_1}" HorizontalAlignment="Center"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn x:Name="OffsetList" Header="偏色" IsReadOnly="True" Visibility="Hidden">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding OffsetColor,Mode=TwoWay}" HorizontalAlignment="Center"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="状态" >
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <CheckBox IsChecked="{Binding IsChecked,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Background="{Binding Brush_2}" HorizontalAlignment="Center"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+
+
                     </DataGrid.Columns>
                     <DataGrid.ContextMenu>
                         <ContextMenu Style="{DynamicResource MaterialDesignContextMenu}">
                             <MenuItem Header="复制坐标" Click="CopyPoint_Click"/>
                             <MenuItem Header="复制颜色值" Click="CopyColor_Click"/>
-                            <MenuItem Header="添加偏色" Command="{Binding Offset_Click}"/>
-                            <MenuItem Header="添加全局偏色" Command="{Binding AllOffset_Click}"/>
-                            <MenuItem Header="清除全局偏色" Command="{Binding AllOffsetClear_Click}"/>
-                            <MenuItem Name="OffsetListState" Header="显示偏色列表" Click="OffsetListState_Click"/>
+                            <MenuItem Header="添加偏色" Command="{Binding AddOffset_Click}"/>
+                            <MenuItem Header="计算偏色" Command="{Binding GetOffset_Click}"/>
                             <MenuItem Header="清空列表" Command="{Binding ClearData_Click}"/>
                         </ContextMenu>
                     </DataGrid.ContextMenu>

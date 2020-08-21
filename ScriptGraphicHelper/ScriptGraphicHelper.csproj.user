@@ -9,11 +9,23 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="Views\Config.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Description.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Views\Offset.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Update="Views\Config.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\Description.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Views\MainWindow.xaml">
       <SubType>Designer</SubType>
     </Page>

@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Newtonsoft.Json;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Text;
+using System.IO;
 using System.Windows;
-using System.Windows.Media.Animation;
+using static System.Environment;
 
 namespace ScriptGraphicHelper.Models
 {
@@ -22,10 +20,174 @@ namespace ScriptGraphicHelper.Models
                 5 => CdCompareStr(colorInfos),
                 6 => AutojsFindStr(colorInfos, rect),
                 7 => EcFindStr(colorInfos, rect),
-                8 => AnchorsCompareStr(colorInfos),
-                9 => AnchorsCompareStrTest(colorInfos),
+                8 => DiyStr(colorInfos, rect),
+                9 => AnchorsCompareStr(colorInfos),
+                10 => AnchorsCompareStrTest(colorInfos),
                 _ => CompareStr(colorInfos),
             };
+        }
+
+        public static string DiyStr(ObservableCollection<ColorInfo> colorInfos, Range rect)
+        {
+            try
+            {
+                StreamReader _sr = File.OpenText(CurrentDirectory + "\\diyFormat.json");
+                string result = _sr.ReadToEnd();
+                _sr.Close();
+                _DiyFormat diyFormat = JsonConvert.DeserializeObject<_DiyFormat>(result);
+                if (diyFormat.ColorMode > 1)
+                    diyFormat.ColorMode = 0;
+                if (diyFormat.Range > 2)
+                    diyFormat.ColorMode = 0;
+                if (diyFormat.Range > 2)
+                    diyFormat.ColorMode = 2;
+
+                DiyFormat.ColorMode = diyFormat.ColorMode;
+                DiyFormat.StartPoint = diyFormat.StartPoint;
+                DiyFormat.ParentSplit = diyFormat.ParentSplit;
+                DiyFormat.ChildSplit = diyFormat.ChildSplit;
+                DiyFormat.BGR = diyFormat.BGR;
+                DiyFormat.ColorPrefix = diyFormat.ColorPrefix;
+                DiyFormat.Range = diyFormat.Range;
+                DiyFormat.Point = diyFormat.Point;
+                DiyFormat.Prefix = diyFormat.Prefix;
+                DiyFormat.Suffix = diyFormat.Suffix;
+            }
+            catch
+            {
+                MessageBox.Show("diyFormat.json文件不存在或自定义格式错误!");
+            }
+            if (DiyFormat.ColorMode == 0)
+            {
+                return DiyFindStr(colorInfos, rect);
+            }
+            else if (DiyFormat.ColorMode == 1)
+            {
+                return DiyCompareStr(colorInfos);
+            }
+            else
+            {
+                return DiyFindStr(colorInfos, rect);
+            }
+        }
+        public static string DiyCompareStr(ObservableCollection<ColorInfo> colorInfos)
+        {
+            string result = "\"";
+            foreach (ColorInfo colorInfo in colorInfos)
+            {
+                if (colorInfo.IsChecked)
+                {
+                    if (colorInfo.OffsetColor == "000000")
+                        if (!DiyFormat.BGR)
+                            result += colorInfo.ThePoint.X.ToString() + DiyFormat.ChildSplit + colorInfo.ThePoint.Y.ToString() + DiyFormat.ChildSplit + DiyFormat.ColorPrefix + colorInfo.TheColor.R.ToString("x2") + colorInfo.TheColor.G.ToString("x2") + colorInfo.TheColor.B.ToString("x2") + DiyFormat.ParentSplit;
+                        else
+                            result += colorInfo.ThePoint.X.ToString() + DiyFormat.ChildSplit + colorInfo.ThePoint.Y.ToString() + DiyFormat.ChildSplit + DiyFormat.ColorPrefix + colorInfo.TheColor.B.ToString("x2") + colorInfo.TheColor.G.ToString("x2") + colorInfo.TheColor.R.ToString("x2") + DiyFormat.ParentSplit;
+                    else
+                    {
+                        if (!DiyFormat.BGR)
+                            result += colorInfo.ThePoint.X.ToString() + DiyFormat.ChildSplit + colorInfo.ThePoint.Y.ToString() + DiyFormat.ChildSplit + DiyFormat.ColorPrefix + colorInfo.TheColor.R.ToString("x2") + colorInfo.TheColor.G.ToString("x2") + colorInfo.TheColor.B.ToString("x2") + "-" + colorInfo.OffsetColor + DiyFormat.ParentSplit;
+                        else
+                        {
+                            string offsetColor = colorInfo.OffsetColor.Substring(4, 2) + colorInfo.OffsetColor.Substring(2, 2) + colorInfo.OffsetColor.Substring(0, 2);
+                            result += colorInfo.ThePoint.X.ToString() + DiyFormat.ChildSplit + colorInfo.ThePoint.Y.ToString() + DiyFormat.ChildSplit + DiyFormat.ColorPrefix + colorInfo.TheColor.B.ToString("x2") + colorInfo.TheColor.G.ToString("x2") + colorInfo.TheColor.R.ToString("x2") + DiyFormat.ParentSplit;
+                        }
+                    }
+                }
+            }
+            result = result.Trim(DiyFormat.ParentSplit.ToCharArray());
+            result += "\"";
+            if (DiyFormat.Point == 0)
+            {
+                result = "x,y," + result;
+            }
+            else if (DiyFormat.Point > 0)
+            {
+                result += ",x,y";
+            }
+            return DiyFormat.Prefix + result + DiyFormat.Suffix;
+        }
+        public static string DiyFindStr(ObservableCollection<ColorInfo> colorInfos, Range rect)
+        {
+            bool isInit = false;
+            Point startPoint = new Point();
+            string result = "\"";
+
+            foreach (ColorInfo colorInfo in colorInfos)
+            {
+                if (colorInfo.IsChecked)
+                {
+                    if (!isInit)
+                    {
+                        isInit = true;
+                        startPoint = colorInfo.ThePoint;
+                        if (DiyFormat.StartPoint)
+                        {
+                            result += "0" + DiyFormat.ChildSplit + "0" + DiyFormat.ChildSplit;
+                        }
+                        if (colorInfo.OffsetColor == "000000")
+                        {
+                            if (!DiyFormat.BGR)
+                                result += DiyFormat.ColorPrefix + colorInfo.TheColor.R.ToString("x2") + colorInfo.TheColor.G.ToString("x2") + colorInfo.TheColor.B.ToString("x2") + "\"" + DiyFormat.ParentSplit + "\"";
+                            else
+                                result += DiyFormat.ColorPrefix + colorInfo.TheColor.B.ToString("x2") + colorInfo.TheColor.G.ToString("x2") + colorInfo.TheColor.R.ToString("x2") + "\"" + DiyFormat.ParentSplit + "\"";
+                        }
+                        else
+                        {
+                            if (!DiyFormat.BGR)
+                                result += DiyFormat.ColorPrefix + colorInfo.TheColor.R.ToString("x2") + colorInfo.TheColor.G.ToString("x2") + colorInfo.TheColor.B.ToString("x2") + "-" + DiyFormat.ColorPrefix + colorInfo.OffsetColor + "\"" + DiyFormat.ParentSplit + "\"";
+                            else
+                            {
+                                string offsetColor = colorInfo.OffsetColor.Substring(4, 2) + colorInfo.OffsetColor.Substring(2, 2) + colorInfo.OffsetColor.Substring(0, 2);
+                                result += DiyFormat.ColorPrefix + colorInfo.TheColor.B.ToString("x2") + colorInfo.TheColor.G.ToString("x2") + colorInfo.TheColor.R.ToString("x2") + "-" + DiyFormat.ColorPrefix + offsetColor + "\"" + DiyFormat.ParentSplit + "\"";
+                            }
+                        }
+                    }
+                    else
+                    {
+                        double OffsetX = colorInfo.ThePoint.X - startPoint.X;
+                        double OffsetY = colorInfo.ThePoint.Y - startPoint.Y;
+                        if (colorInfo.OffsetColor == "000000")
+                        {
+                            if (!DiyFormat.BGR)
+                                result += OffsetX.ToString() + DiyFormat.ChildSplit + OffsetY.ToString() + DiyFormat.ChildSplit + DiyFormat.ColorPrefix + colorInfo.TheColor.R.ToString("x2") + colorInfo.TheColor.G.ToString("x2") + colorInfo.TheColor.B.ToString("x2") + DiyFormat.ParentSplit;
+                            else
+                                result += OffsetX.ToString() + DiyFormat.ChildSplit + OffsetY.ToString() + DiyFormat.ChildSplit + DiyFormat.ColorPrefix + colorInfo.TheColor.B.ToString("x2") + colorInfo.TheColor.G.ToString("x2") + colorInfo.TheColor.R.ToString("x2") + DiyFormat.ParentSplit;
+                        }
+                        else
+                        {
+                            if (!DiyFormat.BGR)
+                                result += OffsetX.ToString() + DiyFormat.ChildSplit + OffsetY.ToString() + DiyFormat.ChildSplit + DiyFormat.ColorPrefix + colorInfo.TheColor.R.ToString("x2") + colorInfo.TheColor.G.ToString("x2") + colorInfo.TheColor.B.ToString("x2") + "-" + DiyFormat.ColorPrefix + colorInfo.OffsetColor + DiyFormat.ParentSplit;
+                            else
+                            {
+                                string offsetColor = colorInfo.OffsetColor.Substring(4, 2) + colorInfo.OffsetColor.Substring(2, 2) + colorInfo.OffsetColor.Substring(0, 2);
+                                result += OffsetX.ToString() + DiyFormat.ChildSplit + OffsetY.ToString() + DiyFormat.ChildSplit + DiyFormat.ColorPrefix + colorInfo.TheColor.B.ToString("x2") + colorInfo.TheColor.G.ToString("x2") + colorInfo.TheColor.R.ToString("x2") + "-" + DiyFormat.ColorPrefix + offsetColor + DiyFormat.ParentSplit;
+                            }
+                        }
+                    }
+                }
+            }
+            result = result.Trim(DiyFormat.ParentSplit.ToCharArray());
+            result += "\"";
+
+            if (DiyFormat.Range == 0)
+                result = rect.ToStr() + "," + result;
+            else if (DiyFormat.Point == 0)
+            {
+                result = "x,y," + result;
+            }
+            if (DiyFormat.Range == 1)
+                result += "," + rect.ToStr();
+            else if (DiyFormat.Point == 1)
+            {
+                result += ",x,y";
+            }
+            if (DiyFormat.Range == 2)
+                result += "," + rect.ToStr();
+            else if (DiyFormat.Point == 2)
+            {
+                result += ",x,y";
+            }
+            return DiyFormat.Prefix + result + DiyFormat.Suffix;
         }
 
         public static string DmFindStr(ObservableCollection<ColorInfo> colorInfos, Range rect)
@@ -112,7 +274,10 @@ namespace ScriptGraphicHelper.Models
                         if (colorInfo.OffsetColor == "000000")
                             result += "\"" + colorInfo.TheColor.B.ToString("x2") + colorInfo.TheColor.G.ToString("x2") + colorInfo.TheColor.R.ToString("x2") + "\",\"";
                         else
-                            result += "\"" + colorInfo.TheColor.B.ToString("x2") + colorInfo.TheColor.G.ToString("x2") + colorInfo.TheColor.R.ToString("x2") + "-" + colorInfo.OffsetColor + "\",\"";
+                        {
+                            string offsetColor = colorInfo.OffsetColor.Substring(4, 2) + colorInfo.OffsetColor.Substring(2, 2) + colorInfo.OffsetColor.Substring(0, 2);
+                            result += "\"" + colorInfo.TheColor.B.ToString("x2") + colorInfo.TheColor.G.ToString("x2") + colorInfo.TheColor.R.ToString("x2") + "-" + offsetColor + "\",\"";
+                        }
                     }
                     else
                     {
@@ -122,8 +287,10 @@ namespace ScriptGraphicHelper.Models
                             result += OffsetX.ToString() + "|" + OffsetY.ToString() + "|" + colorInfo.TheColor.B.ToString("x2") + colorInfo.TheColor.G.ToString("x2") +
                             colorInfo.TheColor.R.ToString("x2") + ",";
                         else
-                            result += OffsetX.ToString() + "|" + OffsetY.ToString() + "|" + colorInfo.TheColor.B.ToString("x2") + colorInfo.TheColor.G.ToString("x2") +
-                            colorInfo.TheColor.R.ToString("x2") + "-" + colorInfo.OffsetColor + ",";
+                        {
+                            string offsetColor = colorInfo.OffsetColor.Substring(4, 2) + colorInfo.OffsetColor.Substring(2, 2) + colorInfo.OffsetColor.Substring(0, 2);
+                            result += OffsetX.ToString() + "|" + OffsetY.ToString() + "|" + colorInfo.TheColor.B.ToString("x2") + colorInfo.TheColor.G.ToString("x2") + colorInfo.TheColor.R.ToString("x2") + "-" + offsetColor + ",";
+                        }
                     }
                 }
             }
@@ -220,7 +387,10 @@ namespace ScriptGraphicHelper.Models
                     if (colorInfo.OffsetColor == "000000")
                         result += colorInfo.ThePoint.X.ToString() + "|" + colorInfo.ThePoint.Y.ToString() + "|" + colorInfo.TheColor.B.ToString("x2") + colorInfo.TheColor.G.ToString("x2") + colorInfo.TheColor.R.ToString("x2") + ",";
                     else
-                        result += colorInfo.ThePoint.X.ToString() + "|" + colorInfo.ThePoint.Y.ToString() + "|" + colorInfo.TheColor.B.ToString("x2") + colorInfo.TheColor.G.ToString("x2") + colorInfo.TheColor.R.ToString("x2") + "-" + colorInfo.OffsetColor + ",";
+                    {
+                        string offsetColor = colorInfo.OffsetColor.Substring(4, 2) + colorInfo.OffsetColor.Substring(2, 2) + colorInfo.OffsetColor.Substring(0, 2);
+                        result += colorInfo.ThePoint.X.ToString() + "|" + colorInfo.ThePoint.Y.ToString() + "|" + colorInfo.TheColor.B.ToString("x2") + colorInfo.TheColor.G.ToString("x2") + colorInfo.TheColor.R.ToString("x2") + "-" + offsetColor + ",";
+                    }
                 }
             }
             result = result.Trim(',');

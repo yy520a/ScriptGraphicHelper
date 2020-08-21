@@ -87,7 +87,7 @@ namespace ScriptGraphicHelper.Models
         private static int IsOffsetSame(List<byte[]> colors)
         {
             int result = 24;
-            double similarity = 8;
+            double similarity = 10;
             byte[] color = colors[7 * 15 + 7];
             List<byte[]> offsetIndex = new List<byte[]>
             {
