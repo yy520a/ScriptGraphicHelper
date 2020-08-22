@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows;
 using static System.Environment;
 
@@ -111,39 +112,43 @@ namespace ScriptGraphicHelper.Models
             }
             return result;
         }
-        public override Bitmap ScreenShot(int Index)
+        public override async Task<Bitmap> ScreenShot(int Index)
         {
-            if (!IsStart(Index))
+            var task = Task.Run(() =>
             {
-                MessageBox.Show("模拟器未启动 ! ");
-                return new Bitmap(1, 1);
-            }
-            string BmpName = "Screen_" + DateTime.Now.ToString("yy-MM-dd-HH-mm-ss") + ".png";
-            Screencap(Index, "/mnt/sdcard/Pictures", BmpName);
-            try
-            {
-                FileStream fileStream = new FileStream(BmpPath + "\\" + BmpName, FileMode.Open, FileAccess.Read);
-                Bitmap bmp = (Bitmap)Image.FromStream(fileStream);
-                fileStream.Close();
-                fileStream.Dispose();
-                return bmp;
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.Message);
-                return new Bitmap(1, 1);
-            }
+                if (!IsStart(Index))
+                {
+                    MessageBox.Show("模拟器未启动 ! ");
+                    return new Bitmap(1, 1);
+                }
+                string BmpName = "Screen_" + DateTime.Now.ToString("yy-MM-dd-HH-mm-ss") + ".png";
+                Screencap(Index, "/mnt/sdcard/Pictures", BmpName);
+                try
+                {
+                    FileStream fileStream = new FileStream(BmpPath + "\\" + BmpName, FileMode.Open, FileAccess.Read);
+                    Bitmap bmp = (Bitmap)Image.FromStream(fileStream);
+                    fileStream.Close();
+                    fileStream.Dispose();
+                    return bmp;
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show(e.Message);
+                    return new Bitmap(1, 1);
+                }
+            });
+            return await task;
         }
         public void Screencap(int index, string savePath, string saveName)//截图
         {
-            PipeCmd("adb -index:" + index.ToString() + " -command:\"shell /system/bin/screencap -p " + savePath.TrimEnd('/') + "/Screenshots/" + saveName+"\"");
+            PipeCmd("adb -index:" + index.ToString() + " -command:\"shell /system/bin/screencap -p " + savePath.TrimEnd('/') + "/Screenshots/" + saveName + "\"");
         }
 
         public string BmpPathGet()
         {
             try
             {
-                return @"C:\Users\" +UserName+ @"\Nox_share\ImageShare\Screenshots\";
+                return @"C:\Users\" + UserName + @"\Nox_share\ImageShare\Screenshots\";
             }
             catch
             {

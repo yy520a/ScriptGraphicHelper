@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace ScriptGraphicHelper.Models
@@ -62,7 +63,7 @@ namespace ScriptGraphicHelper.Models
         }
         public static void Changed(int index)
         {
-            if (index>=0)
+            if (index >= 0)
             {
                 for (int i = 0; i < Emulators.Count; i++)
                 {
@@ -89,9 +90,9 @@ namespace ScriptGraphicHelper.Models
             }
             return result;
         }
-        public static Bitmap ScreenShot()
+        public async static Task<Bitmap> ScreenShot()
         {
-            return Emulators[Select].ScreenShot(Index);
+            return await Emulators[Select].ScreenShot(Index);
         }
     }
 }

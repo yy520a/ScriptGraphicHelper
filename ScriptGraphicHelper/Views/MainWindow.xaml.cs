@@ -15,6 +15,8 @@ using Color = System.Windows.Media.Color;
 using Point = System.Windows.Point;
 using Newtonsoft.Json;
 using static System.Environment;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace ScriptGraphicHelper.Views
 {
@@ -182,6 +184,5 @@ namespace ScriptGraphicHelper.Views
                 showTimer.Stop();
             }
         }
-
     }
 }

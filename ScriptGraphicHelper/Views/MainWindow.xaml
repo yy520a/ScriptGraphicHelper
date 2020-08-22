@@ -101,6 +101,7 @@
                    materialDesign:TextFieldAssist.TextBoxViewMargin="1 0 1 0" />
                     <Button x:Name="Copy" Margin="20,10" Click="Copy_Click" Width="120" Style="{DynamicResource MaterialDesignRaisedButton}">复制</Button>
                     <Button x:Name="Clear" Margin="20,10" Width="120" Command="{Binding Clear_Click}" Style="{DynamicResource MaterialDesignRaisedButton}">清空</Button>
+                    <Button x:Name="Test1" Margin="20,10" Width="120" Click="Test1_Click" Style="{DynamicResource MaterialDesignRaisedButton}">清空</Button>
                 </StackPanel>
             </ScrollViewer>
         </Grid>

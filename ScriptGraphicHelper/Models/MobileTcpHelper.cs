@@ -6,6 +6,7 @@ using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using ScriptGraphicHelper.Views;
 
@@ -110,59 +111,63 @@ namespace ScriptGraphicHelper.Models
             }
             return false;
         }
-        public override Bitmap ScreenShot(int ldIndex)
+        public override async Task<Bitmap> ScreenShot(int Index)
         {
-            try
+            var task = Task.Run(() =>
             {
-                if (!GetTcpState())
+                try
                 {
-                    MessageBox.Show("Tcp已断开连接! 请重新连接");
-                    return new Bitmap(-1, -1);
-                }
-                networkStream.WriteByte(1);
-                byte[] data = new byte[Width * Height * 4];
-                int offset = 0;
-                while (offset < data.Length)
-                {
-                    //byte[] buf = new byte[1024];
-                    //if (networkStream.DataAvailable)
-                    //{
-                    //    int length = networkStream.Read(buf, 0, 1024);
-                    //    Buffer.BlockCopy(buf, 0, data, offset, length);
-                    //    offset += length;
-                    //}
-                    int len = data.Length - offset;
-                    int length = networkStream.Read(data, offset, len);
-                    offset += length;
-
-                }
-                Bitmap bitmap = new Bitmap(Width, Height);
-                BitmapData bitmapData = bitmap.LockBits(new Rectangle(0, 0, Width, Height), ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
-                unsafe
-                {
-                    byte* ptr = (byte*)bitmapData.Scan0;
-                    //Marshal.Copy(data, 0, ptr, data.Length);
-                    int site = 0;
-                    for (int y = 0; y < Height; y++)
+                    if (!GetTcpState())
                     {
-                        for (int x = 0; x < Width; x++)
+                        MessageBox.Show("Tcp已断开连接! 请重新连接");
+                        return new Bitmap(-1, -1);
+                    }
+                    networkStream.WriteByte(1);
+                    byte[] data = new byte[Width * Height * 4];
+                    int offset = 0;
+                    while (offset < data.Length)
+                    {
+                        //byte[] buf = new byte[1024];
+                        //if (networkStream.DataAvailable)
+                        //{
+                        //    int length = networkStream.Read(buf, 0, 1024);
+                        //    Buffer.BlockCopy(buf, 0, data, offset, length);
+                        //    offset += length;
+                        //}
+                        int len = data.Length - offset;
+                        int length = networkStream.Read(data, offset, len);
+                        offset += length;
+
+                    }
+                    Bitmap bitmap = new Bitmap(Width, Height);
+                    BitmapData bitmapData = bitmap.LockBits(new Rectangle(0, 0, Width, Height), ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
+                    unsafe
+                    {
+                        byte* ptr = (byte*)bitmapData.Scan0;
+                        //Marshal.Copy(data, 0, ptr, data.Length);
+                        int site = 0;
+                        for (int y = 0; y < Height; y++)
                         {
-                            ptr[site + 0] = data[site + 2];
-                            ptr[site + 1] = data[site + 1];
-                            ptr[site + 2] = data[site + 0];
-                            ptr[site + 3] = data[site + 3];
-                            site += 4;
+                            for (int x = 0; x < Width; x++)
+                            {
+                                ptr[site + 0] = data[site + 2];
+                                ptr[site + 1] = data[site + 1];
+                                ptr[site + 2] = data[site + 0];
+                                ptr[site + 3] = data[site + 3];
+                                site += 4;
+                            }
                         }
                     }
+                    bitmap.UnlockBits(bitmapData);
+                    return bitmap;
                 }
-                bitmap.UnlockBits(bitmapData);
-                return bitmap;
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.Message);
-                return new Bitmap(1, 1);
-            }
+                catch (Exception e)
+                {
+                    MessageBox.Show(e.Message);
+                    return new Bitmap(1, 1);
+                }
+            });
+            return await task;
         }
     }
 }

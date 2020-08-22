@@ -7,6 +7,7 @@ using static System.Environment;
 using System;
 using System.Drawing;
 using System.Windows;
+using System.Threading.Tasks;
 
 namespace ScriptGraphicHelper.Models
 {
@@ -179,28 +180,32 @@ namespace ScriptGraphicHelper.Models
             }
             return result;
         }
-        public override Bitmap ScreenShot(int Index)
+        public override async Task<Bitmap> ScreenShot(int Index)
         {
-            if (!IsStart(Index))
+            var task = Task.Run(() =>
             {
-                MessageBox.Show("模拟器未启动 ! ");
-                return new Bitmap(1, 1);
-            }
-            string BmpName = "Screen_" + DateTime.Now.ToString("yy-MM-dd-HH-mm-ss") + ".png";
-            Screencap(Index, "/mnt/sdcard/Pictures", BmpName);
-            try
-            {
-                FileStream fileStream = new FileStream(BmpPath + "\\" + BmpName, FileMode.Open, FileAccess.Read);
-                Bitmap bmp = (Bitmap)Image.FromStream(fileStream);
-                fileStream.Close();
-                fileStream.Dispose();
-                return bmp;
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.Message);
-                return new Bitmap(1, 1);
-            }
+                if (!IsStart(Index))
+                {
+                    MessageBox.Show("模拟器未启动 ! ");
+                    return new Bitmap(1, 1);
+                }
+                string BmpName = "Screen_" + DateTime.Now.ToString("yy-MM-dd-HH-mm-ss") + ".png";
+                Screencap(Index, "/mnt/sdcard/Pictures", BmpName);
+                try
+                {
+                    FileStream fileStream = new FileStream(BmpPath + "\\" + BmpName, FileMode.Open, FileAccess.Read);
+                    Bitmap bmp = (Bitmap)Image.FromStream(fileStream);
+                    fileStream.Close();
+                    fileStream.Dispose();
+                    return bmp;
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show(e.Message);
+                    return new Bitmap(1, 1);
+                }
+            });
+            return await task;
         }
         public void Screencap(int ldIndex, string savePath, string saveName)//截图
         {

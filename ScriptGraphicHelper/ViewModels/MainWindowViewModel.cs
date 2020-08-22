@@ -273,10 +273,8 @@ namespace ScriptGraphicHelper.ViewModels
                      }
 
                  });
-        public ICommand ScreenShot_Click => new DelegateCommand<MainWindow>((e) =>
+        public ICommand ScreenShot_Click => new DelegateCommand<MainWindow>(async (e) =>
         {
-            e.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
-            {
                 e.ScreenShot.Cursor = Cursors.Wait;
                 e.Cursor = Cursors.Wait;
                 if (MyEmulator.Select == -1 || MyEmulator.Index == -1)
@@ -285,7 +283,7 @@ namespace ScriptGraphicHelper.ViewModels
                     e.Cursor = Cursors.Arrow;
                     return;
                 }
-                Bitmap bmp = MyEmulator.ScreenShot();
+                Bitmap bmp = await MyEmulator.ScreenShot();
                 if (bmp.Width != 1)
                 {
                     Bmp = bmp;
@@ -296,7 +294,6 @@ namespace ScriptGraphicHelper.ViewModels
                 }
                 e.ScreenShot.Cursor = Cursors.Arrow;
                 e.Cursor = Cursors.Arrow;
-            }));
         });
         public ICommand Save_Click => new DelegateCommand(() =>
                  {
